@@ -4,3 +4,4 @@ venv/*
 api/__init__.pyc
 *.pyc
 .vscode
+.DS_Store

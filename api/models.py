@@ -26,8 +26,7 @@ class Story(Resource):
     def post(self, id):
         parser = reqparse.RequestParser()
         parser.add_argument("dialogue")
-        parser.add_argument("choiceA")
-        parser.add_argument("choiceB")
+        parser.add_argument("choices")
         args = parser.parse_args()
 
         for i in range(len(nodes["nodes"])):
@@ -46,22 +45,19 @@ class Story(Resource):
     def put(self, id):
         parser = reqparse.RequestParser()
         parser.add_argument("dialogue")
-        parser.add_argument("choiceA")
-        parser.add_argument("choiceB")
+        parser.add_argument("choices")
         args = parser.parse_args()
 
         for node in nodes["nodes"]:
             if(int(id) == nodes["nodes"][node]["id"]):
                 node["dialogue"] = args["dialogue"]
-                node["choiceA"] = args["choiceA"]
-                node["choiceB"] = args["choiceB"]
+                node["choices"] = args["choices"]
                 return node, 200
 
         node = {
             "id": id,
             "dialogue": args["dialogue"],
-            "choiceA": args["choiceA"],
-            "choiceB": args["choiceB"]
+            "choices": args["choices"]
         }
         nodes["nodes"].append(node)
         return node, 201
