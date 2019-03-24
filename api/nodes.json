@@ -2,31 +2,45 @@
     "nodes":[
        {
           "id":0,
-          "dialogue":"This is what the character says.",
+          "dialogue":"...ello? (static) ..body there? Hello? ",
           "choices":[
              {
-                "title":"This is what the first choice will say",
+                "title":"Hi.",
                 "nextID":1
              },
              {
-                "title":"This is what the second choice will say",
+                "title":"Who is this?",
                 "nextID":2
              }
           ]
        },
        {
           "id":1,
-          "dialogue":"dsl;kjda;f",
+          "dialogue":"I...I can't remember anything...",
           "choices":[
              {
-                "title":"This is what the first choice will say",
+                "title":"What happened?",
                 "nextID":3
              },
              {
-                "title":"This is what the second choice will say",
+                "title":"How can that be?",
                 "nextID":4
              }
           ]
+       },
+       {
+          "id":2,
+          "dialogue":"I.. I'm not sure I haven't really thought about it.",
+          "choices":[
+            {
+               "title":"What do you mean you aren't sure?",
+               "nextID":5
+            },
+            {
+               "title":"That's not really helpful..",
+               "nextID":6
+            }
+         ]
        }
     ]
  }
