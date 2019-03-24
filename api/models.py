@@ -12,7 +12,7 @@ class Story(Resource):
                 return node, 200
     
         return "Node not found", 404
-    def post(self, id): 
+    def post(self, id): #Probably useless
         parser = reqparse.RequestParser()
         parser.add_argument("dialogue")
         parser.add_argument("choiceA")
@@ -32,7 +32,7 @@ class Story(Resource):
         data.nodes.append(node)
         return node, 201
 
-    def put(self, id):
+    def put(self, id): #Also probably useless
         parser = reqparse.RequestParser()
         parser.add_argument("dialogue")
         parser.add_argument("choiceA")
@@ -55,9 +55,9 @@ class Story(Resource):
         data.nodes.append(node)
         return node, 201
 
-    def delete(self, name):
+    def delete(self, name): #Also probably useless
         global ndoes
         nodes = [node for node in data.nodes if node["name"] != name]
         return "{} is deleted.".format(name), 200
-      
+
 api.add_resource(Story, "/node/<string:id>")
