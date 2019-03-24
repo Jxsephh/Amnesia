@@ -1,7 +1,6 @@
 #All of the story dialogue and user choices should be placed here.
 
-class data():
-    nodes = [
+nodes = [
     {
         "id" : "0",
         "dialogue" : "This will be what the character says.",
@@ -9,3 +8,5 @@ class data():
         "choiceB" : "This will be the other choice."
     }
 ]
+
+print(nodes)

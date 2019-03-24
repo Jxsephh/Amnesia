@@ -1,0 +1,16 @@
+{ "nodes" : [
+    {
+        "id" : 0,
+        "dialogue" : "placeholder1",
+        "choiceA" : "placeholder2",
+        "choiceB" : "placeholder3"
+    },
+    {
+        "id" : 1,
+        "dialogue" : "dsl;kjda;f",
+        "choiceA" : "asdhfj;asdajsl;f",
+        "choiceB" : "alkjfd;sdfsd"
+    }
+]
+
+}
