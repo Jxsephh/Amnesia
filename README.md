@@ -12,4 +12,5 @@ $ python run.py
 
 ```
 
-More to come for virtual environments...
+## Virtual Environment
+Activate using `source venv/bin/activate`. Install all packages using `pip install -r requirements.txt`.

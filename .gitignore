@@ -1,3 +1,6 @@
+# virtualenv shit
+venv/*
+
 api/__init__.pyc
 *.pyc
 .vscode
