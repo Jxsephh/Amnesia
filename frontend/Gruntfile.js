@@ -33,6 +33,7 @@ module.exports = function(grunt) {
           ],
           'public/js/app.min.js': [
             'js/global.js',
+            'js/choices.js',
           ]
         }
       }
@@ -75,6 +76,27 @@ module.exports = function(grunt) {
           src: ['html/*.html', '*.html'],
           dest: 'public'
         }]
+      }
+    },
+
+
+    // automatic updating when files change
+    watch: {
+      sass: {
+        files: ['sass/*'],
+        tasks: ['sass']
+      },
+      js: {
+        files: ['js/*'],
+        tasks: ['uglify']
+      },
+      rsrc: {
+        files: ['resources/*'],
+        tasks: ['copy']
+      },
+      html: {
+        files: ['html/*'],
+        tasks: ['htmlmin']
       }
     }
   });

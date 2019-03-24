@@ -1,0 +1,109 @@
+@import 'settings';
+@import 'foundation';
+
+// Global styles
+@include foundation-global-styles;
+@include foundation-forms;
+@include foundation-typography;
+
+// Foundation grid
+@include foundation-xy-grid-classes;
+
+// Generic components
+@include foundation-button;
+// @include foundation-button-group;
+// @include foundation-close-button;
+// @include foundation-label;
+// @include foundation-slider;
+// @include foundation-range-input;
+// @include foundation-switch;
+
+// Basic components
+// @include foundation-badge;
+// @include foundation-callout;
+// @include foundation-card;
+// @include foundation-dropdown;
+
+// Containers
+// @include foundation-tabs;
+
+// Menu-based containers
+// @include foundation-menu;
+// @include foundation-menu-icon;
+// @include foundation-drilldown-menu;
+// @include foundation-dropdown-menu;
+
+// Layout components
+// @include foundation-title-bar;
+// @include foundation-top-bar;
+
+// Helpers
+@include foundation-float-classes;
+// @include foundation-flex-classes;
+@include foundation-visibility-classes;
+// @include foundation-prototype-classes;
+
+
+
+@keyframes flickerAnimation {
+  0%   { opacity:1; }
+  50%  { opacity:0; }
+  100% { opacity:1; }
+}
+
+body {
+  overflow: hidden;
+
+  background: #000;
+  color: #0f0;
+}
+
+.grid-container {
+  padding: 0;
+}
+
+#text {
+  font-family: 'Fira Code', monospace;
+}
+#text .enter {
+  margin-top: 0.5em;
+}
+
+#entry {
+  background: #ddd;
+}
+#entry textarea {
+  background: #ddd;
+  color: #000;
+
+  height: 100%;
+}
+#entry textarea::placeholder {
+  color: #666;
+}
+#entry .submit {
+
+}
+#entry button {
+  width: 100%;
+}
+
+.response {
+  font-weight: bold;
+
+  margin-bottom: 0.5em;
+}
+
+span.caret {
+  opacity: 1;
+  animation: flickerAnimation 1s infinite;
+}
+
+button {
+  border: 1px solid #0f0;
+  background: #000;
+  color: #0f0;
+  padding: 0.4em;
+
+  cursor: pointer;
+}

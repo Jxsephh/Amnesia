@@ -1,30 +1,30 @@
-{  
-    "nodes":[  
-       {  
+{
+    "nodes":[
+       {
           "id":0,
           "dialogue":"This is what the character says.",
-          "choices":[  
-             {  
+          "choices":[
+             {
                 "title":"This is what the first choice will say",
                 "nextID":1
              },
-             {  
+             {
                 "title":"This is what the second choice will say",
-                "next ID":2
+                "nextID":2
              }
           ]
        },
-       {  
+       {
           "id":1,
           "dialogue":"dsl;kjda;f",
-          "choices":[  
-             {  
+          "choices":[
+             {
                 "title":"This is what the first choice will say",
                 "nextID":3
              },
-             {  
+             {
                 "title":"This is what the second choice will say",
-                "next ID":4
+                "nextID":4
              }
           ]
        }
