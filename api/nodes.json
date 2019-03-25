@@ -5,7 +5,7 @@
           "dialogue":"...ello? (static) ..body there? Hello? ",
           "choices":[
              {
-                "title":"Hi.",
+                "title":"Hello?",
                 "nextID":1
              },
              {
@@ -41,6 +41,48 @@
                "nextID":6
             }
          ]
-       }
+       },
+       {
+         "id":3,
+         "dialogue":"Well for starters, there's burning helicopter wreckage about 30 yards away from me. If I had to make a BOLD assumption, I would guess that I was on it, considering I don't remember anything before waking up here. There's still some fires burning, but the wreckage looks extinguished, for the most part. But it's getting dark, I'm not sure I want to be caught out in the woods like this after dark. Seeing as how you're my only real source of advice right now, what do you think I should do?",
+         "choices":[
+           {
+              "title":"Check out the crash site.",
+              "nextID":7
+           },
+           {
+              "title":"Look for shelter.",
+              "nextID":8
+           }
+        ]
+      },
+      {
+         "id":7,
+         "dialogue":"Okay, seems like a good idea. ... There isn't a whole lot left... I'm not sure how I survived this. ... There's no sign of a pilot(or anything left of one). Was I the pilot?",
+         "choices":[
+           {
+              "title":"Do you know how to fly a helicopter?",
+              "nextID":9
+           },
+           {
+              "title":"I don't know, were you?",
+              "nextID":9
+           }
+        ]
+      },
+      {
+         "id":9,
+         "dialogue":"In case you forgot, I don't remember anything... I guess it isn't IMPOSSIBLE ... But if I wasn't flying this thing, the real question is what happened to the person who was...",
+         "choices":[
+           {
+              "title":"Just get out of there.",
+              "nextID":8
+           },
+           {
+              "title":"Don't worry about that now, keep looking.",
+              "nextID":8
+           }
+        ]
+      }
     ]
  }
