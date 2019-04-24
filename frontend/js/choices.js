@@ -1,5 +1,3 @@
-'use strict';
-
 // state
 var startNode = 0;
 
@@ -19,37 +17,54 @@ $(document).ready(function() {
     $('div.enter').before(messageElement);
 
     // apply it
-    processChoice(nextId);
+    goToNodeId(nextId);
   });
-
-  // get initial choice
-  processChoice(startNode);
 });
 
 // process choice
-function processChoice(nextId) {
-  // show loader
+function goToNodeId(nextId) {
+  window.currentNodeId = nextId;
 
   // fetch response
   $.get('/node/' + nextId).done(function(data) {
-    // append display
-    var message = data.dialogue;
+    window.currentChoice = data;
 
-    var messageElement = $('<div></div>').text(message);
+    // format message
+    var message = '\n' + data.dialogue;
 
-    $('div.enter').before(messageElement);
+    // print options
+    var prompt = '\n';
 
-    // set buttons
-    $('div.enter > button').each(function(i) {
+    for(var i = 0; i < data.choices.length; i++) {
       var choice = data.choices[i];
 
-      $(this).text(choice.title);
-      $(this).data('nextId', choice.nextID);
+      prompt += (i + 1) + ') ' + choice.title + '\n';
+    }
+
+    // finally, write it
+    termWriteSlow(term, message, Terminal.ATTR_INVERSE, function() {
+      termWriteSlow(term, prompt);
     });
   }).fail(function(error) {
     console.log(error);
     alert('ajax error');
   });
-
-  // update dom
 };
+
+
+
+/**
+ * Handles an offset into choices.
+ */
+function handleChoiceOffset(offset) {
+  var choices = window.currentChoice.choices;
+
+  // ensure it's in range
+  if(offset > (choices.length)) {
+    return false;
+  }
+
+  // handle it normally otherwise
+  goToNodeId(choices[offset].nextID);
+  return true;
+}

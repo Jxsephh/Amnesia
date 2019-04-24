@@ -34,6 +34,7 @@ module.exports = function(grunt) {
           'public/js/app.min.js': [
             'js/global.js',
             'js/choices.js',
+            'js/terminal.js',
           ]
         }
       }
