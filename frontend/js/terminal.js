@@ -1,7 +1,7 @@
 var Terminal = (function () {
   function Terminal () {
     this.width = 80
-    this.height = 24
+    this.height = 25
     this.cursor = { x: 0, y: 0 }
     var a = this.width * this.height
     this.buffer = new Array(a)
@@ -11,9 +11,59 @@ var Terminal = (function () {
     this.clear()
   }
 
+  /**
+   * Attributes for characters, may be combined with logical OR:
+   * - ATTR_CURSOR: Character is treated as a cursor.
+   * - ATTR_INVERSE: Character is displayed in inverse video mode
+   * - ATTR_BLINK: Character blinks
+   * - ATTR_WRAP: Text is wrapped (used by string print routine)
+   */
   Terminal.ATTR_CURSOR = 1
   Terminal.ATTR_INVERSE = 2
   Terminal.ATTR_BLINK = 4
+  Terminal.ATTR_WRAP = 256
+
+
+
+  /**
+   * Gets the size of the terminal.
+   */
+  Terminal.prototype.getSize = function() {
+    return {
+      width: this.width,
+      height: this.height
+    };
+  }
+
+
+  /**
+   * Gets the cursor position.
+   */
+  Terminal.prototype.getCursor = function() {
+    return this.cursor;
+  }
+  /**
+   * Sets the cursor position.
+   */
+  Terminal.prototype.setCursor = function(x, y) {
+    this.cursor.x = x;
+    this.cursor.y = y;
+
+    // console.log(this.cursor);
+  }
+
+  /**
+   * Writes a character at the given position.
+   */
+  Terminal.prototype.putCharAt = function(x, y, c, attrs) {
+    var i = (y * this.width) + x;
+
+    // ignore newlines
+    if(c !== '\n') {
+      this.buffer[i] = c
+      this.attrs[i] = attrs || 0
+    }
+  }
 
   Terminal.prototype.clear = function () {
     var i, len
@@ -33,7 +83,6 @@ var Terminal = (function () {
       s = s.match(RegExp('.{1,' + (this.width - 2) + '}(\\s|$)', 'g')).join('\n')
     }
     var _this = this;
-    var timer = 10;
 
     // s.split('').forEach(function (c) {
     //   window.setTimeout(function(term, char, charAttr) {
@@ -51,28 +100,42 @@ var Terminal = (function () {
   }
 
   Terminal.prototype.addChar = function (c, attrs) {
+    // get offset into buffer
     var i = this.cursor.y * this.width + this.cursor.x
+
+    // write character into buffer if not a newline
     if (c !== '\n') {
       this.buffer[i] = c
       this.attrs[i] = attrs || 0
     }
+
+    // handle going to the new line if we reach the edge
     if (c === '\n' || this.cursor.x >= this.width - 1) {
       this.cursor.x = 0
       this.cursor.y++
     } else {
       this.cursor.x++
     }
-    if (this.cursor.y >= this.height) {
+
+    // scroll if needed
+    if (this.cursor.y >= (this.height - 1)) {
       this.cursor.y--
       var len
-      var lastLine = this.buffer.length - this.width
+      var lastLine = this.buffer.length - (this.width * 2)
+      var statusLine = this.buffer.length - (this.width * 1)
+
       for (i = 0, len = this.buffer.length; i < len; i++) {
         if (i < lastLine) {
           this.buffer[i] = this.buffer[i + this.width]
           this.attrs[i] = this.attrs[i + this.width]
         } else {
-          this.buffer[i] = ' '
-          this.attrs[i] = 0
+          if(i >= statusLine) {
+            /* do nothing on the status line */
+          } else {
+            /* clear other line */
+            this.buffer[i] = ' '
+            this.attrs[i] = 0
+          }
         }
       }
     }
@@ -153,8 +216,17 @@ function update () {
 }
 
 
+/**
+ * Writes a string to the terminal, with some delay between characters like you
+ * would experience with a slow dial-up connection.
+ */
 function termWriteSlow(term, string, attrs, callback) {
   var timer = 10;
+
+  // wrap string
+  if((attrs & Terminal.ATTR_WRAP)) {
+    string = string.match(RegExp('.{1,' + (80 - 2) + '}(\\s|$)', 'g')).join('\n')
+  }
 
   for (var i = 0; i < string.length; i++) {
     // extract char and attributes
@@ -165,23 +237,12 @@ function termWriteSlow(term, string, attrs, callback) {
         term.addChar(char, attrs);
         update();
 
+        // run callback if specified (null if not at end of string)
         if(callback) callback();
     }, timer, term, char, (i >= (string.length - 1)) ? callback : null);
     timer += 10;
   }
 }
-
-termWriteSlow(term,
-  '    _                                       _         \n' +
-  '   / \\     _ __ ___    _ __     ___   ___  (_)   __ _ \n' +
-  '  / _ \\   | \'_ ` _ \\  | \'_ \\   / _ \\ / __| | |  / _` |\n' +
-  ' / ___ \\  | | | | | | | | | | |  __/ \\__ \\ | | | (_| |\n' +
-  '/_/   \\_\\ |_| |_| |_| |_| |_|  \\___| |___/ |_|  \\__,_|\n' +
-  '\nWelcome back! Continuing your game...\n', 0, function() {
-    // get initial choice
-    goToNodeId(startNode)
-  }
-);
 
 
 var sessionID = sessionStorage.getItem('sessionID')
@@ -189,31 +250,27 @@ var inputBuffer = ''
 
 window.addEventListener('keydown', function (e) {
   if (e.keyCode === 13) { // Enter key
+    // handle command
     term.addChar('\n')
     var message = inputBuffer
     inputBuffer = ''
 
-    // handle the response
-    var success = false;
-
-    // is it an integer, that's in range?
-    var offset = parseInt(message);
-
-    if(!isNaN(offset)) {
-      // handle it (minus one to make it align with the array)
-      success = handleChoiceOffset(offset - 1);
-    }
-
+    var success = doCommand(message);
 
     if(!success) {
       // print an error message
       termWriteSlow(term, '\nPlease enter one of the choices above!\n', 0, function() {
-        goToNodeId(window.currentNodeId);
+        if(window.gameState.currentScreen === 'game') {
+          goToNodeId(window.currentNodeId);
+        }
       });
     }
   } else if (e.keyCode === 8) { // Backspace
     term.backspace()
     inputBuffer = inputBuffer.slice(0, -1)
+
+    // also, ignore the event
+    e.preventDefault();
   } else if (e.key.length === 1) { // Modifier keys have long names.
     term.addChar(e.key)
     inputBuffer += e.key

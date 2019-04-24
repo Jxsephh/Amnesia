@@ -102,11 +102,11 @@ canvas {
 
       // Add a little noise. Make the noise pixels bigger so it looks more like lo-res live video.
       // And make the noise pixels square despite the aspect ratio.
-      // vec2 c = vTexCoord * 500.0;
-      // if (s.x > s.y) { c.x *= s.x / s.y; } else { c.y *= s.y / s.x; }
-      // c = floor(c) / 500.0;
-      // vec3 noise = vec3(random(c * 1.5), random(c * 2.5), random(c));
-      // gl_FragColor.rgb = mix(gl_FragColor.rgb, blend(gl_FragColor.rgb, noise), 0.08);
+      vec2 c = vTexCoord * 500.0;
+      if (s.x > s.y) { c.x *= s.x / s.y; } else { c.y *= s.y / s.x; }
+      c = floor(c) / 500.0;
+      vec3 noise = vec3(random(c * 1.5), random(c * 2.5), random(c));
+      gl_FragColor.rgb = mix(gl_FragColor.rgb, blend(gl_FragColor.rgb, noise), 0.08);
 
       // Not the best vignette in the world, but good enough.
       // https://github.com/mattdesl/gl-vignette-background
