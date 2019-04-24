@@ -4,363 +4,327 @@
     <title>Amnesia</title>
 
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700|Oswald" rel="stylesheet">
-    <!-- <link rel='stylesheet' href='/css/main.css' /> -->
+    <link rel='stylesheet' href='/css/main.css' />
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-<style type="text/css">
-* {
-  margin: 0;
-  padding: 0;
-}
-html, body {
-  overflow: hidden;
-  width: 100%;
-  height: 100%;
-}
-
-#content {
-  display: none; /* Overridden by JavaScript */
-  width: 50%;
-  margin-bottom: 5%;
-  text-align: center;
-  padding: 2%;
-}
-canvas {
-  width: 100%;
-  height: 100%;
-}
-
-@media (max-width: 992px) {
-  #content { width: auto; margin: 20px; }
-  h1 { font-size: 30px; }
-  li { display: block; }
-}
-@media (max-height: 414px) {
-  h1 { font-size: 20px; }
-  body { font-size: 14px; }
-  li { margin-bottom: 10px; }
-}
-</style>
-
     <meta name="apple-mobile-web-app-capable" content="yes">
   </head>
   <body>
-  <div id="content">
-  </div>
+    <div id="content">
+    </div>
 
-  <canvas></canvas>
+    <canvas></canvas>
 
 
 
     <!-- Background vertex shader. Nothing special. -->
     <script id="bg-vs" type="x-shader/vertex">
-    attribute vec3 aPosition;
-    attribute vec2 aTexCoord;
-    varying vec2 vTexCoord;
+      attribute vec3 aPosition;
+      attribute vec2 aTexCoord;
+      varying vec2 vTexCoord;
 
-    void main() {
-      gl_Position = vec4(aPosition, 1.0);
-      vTexCoord = aTexCoord;
-    }
+      void main() {
+        gl_Position = vec4(aPosition, 1.0);
+        vTexCoord = aTexCoord;
+      }
     </script>
 
     <!-- Background fragment shader. Centers the background image in a quad and adds effects. -->
     <script id="bg-fs" type="x-shader/fragment">
-    uniform sampler2D uBGImageTex;
-    uniform vec2 uScreenSize;
-    uniform vec2 uBGSize;
-    uniform float uTime;
-    varying mediump vec2 vTexCoord;
+      uniform sampler2D uBGImageTex;
+      uniform vec2 uScreenSize;
+      uniform vec2 uBGSize;
+      uniform float uTime;
+      varying mediump vec2 vTexCoord;
 
-    // https://github.com/Jam3/glsl-blend-overlay
-    vec3 blend(vec3 base, vec3 value) {
-      return mix(1.0 - 2.0 * (1.0 - base) * (1.0 - value), 2.0 * base * value, step(base, vec3(0.5)));
-    }
+      // https://github.com/Jam3/glsl-blend-overlay
+      vec3 blend(vec3 base, vec3 value) {
+        return mix(1.0 - 2.0 * (1.0 - base) * (1.0 - value), 2.0 * base * value, step(base, vec3(0.5)));
+      }
 
-    // https://github.com/mattdesl/glsl-random
-    float random(vec2 co) {
-      highp float a = 12.9898;
-      highp float b = 78.233 - uTime;
-      highp float c = 43758.5453 + uTime;
-      highp float dt = dot(co.xy, vec2(a,b));
-      highp float sn = mod(dt, 3.14);
-      return fract(sin(sn) * c);
-    }
+      // https://github.com/mattdesl/glsl-random
+      float random(vec2 co) {
+        highp float a = 12.9898;
+        highp float b = 78.233 - uTime;
+        highp float c = 43758.5453 + uTime;
+        highp float dt = dot(co.xy, vec2(a,b));
+        highp float sn = mod(dt, 3.14);
+        return fract(sin(sn) * c);
+      }
 
-    void main() {
-      // An implementation of CSS `background-size: cover`
-      // using http://stackoverflow.com/a/6565988 and my own crappy math
-      vec2 s = uScreenSize; // Screen
-      vec2 i = uBGSize; // Image
-      float rs = s.x / s.y;
-      float ri = i.x / i.y;
-      vec2 new = rs < ri ? vec2(i.x * s.y / i.y, s.y) : vec2(s.x, i.y * s.x / i.x);
-      vec2 offset = (rs < ri ? vec2((new.x - s.x) / 2.0, 0.0) : vec2(0.0, (new.y - s.y) / 2.0)) / new;
-      vec2 uv = vTexCoord * s / new + offset;
-      gl_FragColor = texture2D(uBGImageTex, uv);
+      void main() {
+        // An implementation of CSS `background-size: cover`
+        // using http://stackoverflow.com/a/6565988 and my own crappy math
+        vec2 s = uScreenSize; // Screen
+        vec2 i = uBGSize; // Image
+        float rs = s.x / s.y;
+        float ri = i.x / i.y;
+        vec2 new = rs < ri ? vec2(i.x * s.y / i.y, s.y) : vec2(s.x, i.y * s.x / i.x);
+        vec2 offset = (rs < ri ? vec2((new.x - s.x) / 2.0, 0.0) : vec2(0.0, (new.y - s.y) / 2.0)) / new;
+        vec2 uv = vTexCoord * s / new + offset;
+        gl_FragColor = texture2D(uBGImageTex, uv);
 
-      // Add a little noise. Make the noise pixels bigger so it looks more like lo-res live video.
-      // And make the noise pixels square despite the aspect ratio.
-      vec2 c = vTexCoord * 500.0;
-      if (s.x > s.y) { c.x *= s.x / s.y; } else { c.y *= s.y / s.x; }
-      c = floor(c) / 500.0;
-      vec3 noise = vec3(random(c * 1.5), random(c * 2.5), random(c));
-      gl_FragColor.rgb = mix(gl_FragColor.rgb, blend(gl_FragColor.rgb, noise), 0.08);
+        // Add a little noise. Make the noise pixels bigger so it looks more like lo-res live video.
+        // And make the noise pixels square despite the aspect ratio.
+        vec2 c = vTexCoord * 500.0;
+        if (s.x > s.y) { c.x *= s.x / s.y; } else { c.y *= s.y / s.x; }
+        c = floor(c) / 500.0;
+        vec3 noise = vec3(random(c * 1.5), random(c * 2.5), random(c));
+        gl_FragColor.rgb = mix(gl_FragColor.rgb, blend(gl_FragColor.rgb, noise), 0.08);
 
-      // Not the best vignette in the world, but good enough.
-      // https://github.com/mattdesl/gl-vignette-background
-      // float dist = length(vTexCoord - 0.5) * 0.8;
-      // float vignette = mix(1.0, -0.4, dist) * 2.8;
-      // gl_FragColor.rgb -= clamp(1.0 - vignette, 0.0, 1.0);
-      //gl_FragColor.rgb = vec3(vignette); // Uncomment to see only vignette/noise.
-    }
+        // Not the best vignette in the world, but good enough.
+        // https://github.com/mattdesl/gl-vignette-background
+        // float dist = length(vTexCoord - 0.5) * 0.8;
+        // float vignette = mix(1.0, -0.4, dist) * 2.8;
+        // gl_FragColor.rgb -= clamp(1.0 - vignette, 0.0, 1.0);
+        // gl_FragColor.rgb = vec3(vignette); // Uncomment to see only vignette/noise.
+      }
     </script>
 
     <!-- Post-process vertex shader. Nothing special. -->
     <script id="post-vs" type="x-shader/vertex">
-    attribute vec3 aPosition;
-    attribute vec2 aTexCoord;
-    varying vec2 vTexCoord;
+      attribute vec3 aPosition;
+      attribute vec2 aTexCoord;
+      varying vec2 vTexCoord;
 
-    void main() {
-      gl_Position = vec4(aPosition, 1.0);
-      vTexCoord = aTexCoord;
-    }
+      void main() {
+        gl_Position = vec4(aPosition, 1.0);
+        vTexCoord = aTexCoord;
+      }
     </script>
 
     <!-- Post-process fragment shader. Does sweet CRT effects. -->
     <script id="post-fs" type="x-shader/fragment">
-    uniform sampler2D uTermTex;
-    varying mediump vec2 vTexCoord;
+      uniform sampler2D uTermTex;
+      varying mediump vec2 vTexCoord;
 
-    // BEGIN SHADERTOY CODE -------------------------------------------------------------{{{1
+      // BEGIN SHADERTOY CODE -------------------------------------------------------------{{{1
 
-    //
-    // PUBLIC DOMAIN CRT STYLED SCAN-LINE SHADER
-    //
-    //   by Timothy Lottes
-    //
-    // This is more along the style of a really good CGA arcade monitor.
-    // With RGB inputs instead of NTSC.
-    // The shadow mask example has the mask rotated 90 degrees for less chromatic aberration.
-    //
-    // Left it unoptimized to show the theory behind the algorithm.
-    //
-    // It is an example what I personally would want as a display option for pixel art games.
-    // Please take and use, change, or whatever.
-    //
+      //
+      // PUBLIC DOMAIN CRT STYLED SCAN-LINE SHADER
+      //
+      //   by Timothy Lottes
+      //
+      // This is more along the style of a really good CGA arcade monitor.
+      // With RGB inputs instead of NTSC.
+      // The shadow mask example has the mask rotated 90 degrees for less chromatic aberration.
+      //
+      // Left it unoptimized to show the theory behind the algorithm.
+      //
+      // It is an example what I personally would want as a display option for pixel art games.
+      // Please take and use, change, or whatever.
+      //
 
-    vec2 iResolution = vec2(2048.0, 2048.0); // Since this is ported from ShaderToy
+      vec2 iResolution = vec2(2048.0, 2048.0); // Since this is ported from ShaderToy
 
-    // Emulated input resolution.
-    #if 1
-      // Fix resolution to set amount. Trial and error shows that good values for the Y axis
-      // are number of pixels per font character (8) * number of cells (60 or 24) * 3
-    vec2 res = vec2(60.0 * 8.0, 24.0 * 8.0 * 3.0);
-    #else
-      // Optimize for resize.
-    vec2 res = iResolution.xy / 6.0;
-    #endif
+      // Emulated input resolution.
+      #if 1
+        // Fix resolution to set amount. Trial and error shows that good values for the Y axis
+        // are number of pixels per font character (8) * number of cells (60 or 24) * 3
+      vec2 res = vec2(60.0 * 8.0, 24.0 * 8.0 * 3.0);
+      #else
+        // Optimize for resize.
+      vec2 res = iResolution.xy / 6.0;
+      #endif
 
-    // Hardness of scanline.
-    //  -8.0 = soft
-    // -16.0 = medium
-    float hardScan = -10.0;
+      // Hardness of scanline.
+      //  -8.0 = soft
+      // -16.0 = medium
+      float hardScan = -10.0;
 
-    // Hardness of pixels in scanline.
-    // -2.0 = soft
-    // -4.0 = hard
-    float hardPix = -4.0;
+      // Hardness of pixels in scanline.
+      // -2.0 = soft
+      // -4.0 = hard
+      float hardPix = -4.0;
 
-    // Display warp.
-    // 0.0 = none
-    // 1.0/8.0 = extreme
-    vec2 warp = vec2(1.0 / 60.0, 1.0 / 24.0);
+      // Display warp.
+      // 0.0 = none
+      // 1.0/8.0 = extreme
+      vec2 warp = vec2(1.0 / 60.0, 1.0 / 24.0);
 
-    // Amount of shadow mask.
-    float maskDark = 1.0;
-    float maskLight = 1.0;
+      // Amount of shadow mask.
+      float maskDark = 1.0;
+      float maskLight = 1.0;
 
-    // sRGB to Linear.
-    // Assuing using sRGB typed textures this should not be needed.
-    float ToLinear1(float c) {
-      return (c <= 0.04045) ? c / 12.92 : pow((c + 0.055) / 1.055, 2.4);
-    }
-    vec3 ToLinear(vec3 c) {
-      return vec3(ToLinear1(c.r), ToLinear1(c.g), ToLinear1(c.b));
-    }
+      // sRGB to Linear.
+      // Assuing using sRGB typed textures this should not be needed.
+      float ToLinear1(float c) {
+        return (c <= 0.04045) ? c / 12.92 : pow((c + 0.055) / 1.055, 2.4);
+      }
+      vec3 ToLinear(vec3 c) {
+        return vec3(ToLinear1(c.r), ToLinear1(c.g), ToLinear1(c.b));
+      }
 
-    // Linear to sRGB.
-    // Assuing using sRGB typed textures this should not be needed.
-    float ToSrgb1(float c) {
-      return (c < 0.0031308 ? c * 12.92 : 1.055 * pow(c, 0.41666) - 0.055);
-    }
-    vec3 ToSrgb(vec3 c) {
-      return vec3(ToSrgb1(c.r), ToSrgb1(c.g), ToSrgb1(c.b));
-    }
+      // Linear to sRGB.
+      // Assuing using sRGB typed textures this should not be needed.
+      float ToSrgb1(float c) {
+        return (c < 0.0031308 ? c * 12.92 : 1.055 * pow(c, 0.41666) - 0.055);
+      }
+      vec3 ToSrgb(vec3 c) {
+        return vec3(ToSrgb1(c.r), ToSrgb1(c.g), ToSrgb1(c.b));
+      }
 
-    // Nearest emulated sample given floating point position and texel offset.
-    // Also zero's off screen.
-    vec3 Fetch(vec2 pos, vec2 off) {
-      pos = floor(pos * res + off) / res;
-      if (max(abs(pos.x - 0.5), abs(pos.y - 0.5)) > 0.5)
-        return vec3(0.0, 0.0, 0.0);
-      return ToLinear(texture2D(uTermTex, pos.xy, -16.0).rgb);
-    }
+      // Nearest emulated sample given floating point position and texel offset.
+      // Also zero's off screen.
+      vec3 Fetch(vec2 pos, vec2 off) {
+        pos = floor(pos * res + off) / res;
+        if (max(abs(pos.x - 0.5), abs(pos.y - 0.5)) > 0.5)
+          return vec3(0.0, 0.0, 0.0);
+        return ToLinear(texture2D(uTermTex, pos.xy, -16.0).rgb);
+      }
 
-    // Distance in emulated pixels to nearest texel.
-    vec2 Dist(vec2 pos) {
-      pos = pos * res;
-      return -((pos - floor(pos)) - vec2(0.5));
-    }
+      // Distance in emulated pixels to nearest texel.
+      vec2 Dist(vec2 pos) {
+        pos = pos * res;
+        return -((pos - floor(pos)) - vec2(0.5));
+      }
 
-    // 1D Gaussian.
-    float Gaus(float pos, float scale) {
-      return exp2(scale * pos * pos);
-    }
+      // 1D Gaussian.
+      float Gaus(float pos, float scale) {
+        return exp2(scale * pos * pos);
+      }
 
-    // 3-tap Gaussian filter along horz line.
-    vec3 Horz3(vec2 pos, float off) {
-      vec3 b = Fetch(pos, vec2(-1.0, off));
-      vec3 c = Fetch(pos, vec2(0.0, off));
-      vec3 d = Fetch(pos, vec2(1.0, off));
-      float dst = Dist(pos).x;
-      // Convert distance to weight.
-      float scale = hardPix;
-      float wb = Gaus(dst - 1.0, scale);
-      float wc = Gaus(dst + 0.0, scale);
-      float wd = Gaus(dst + 1.0, scale);
-      // Return filtered sample.
-      return (b * wb + c * wc + d * wd) / (wb + wc + wd);
-    }
+      // 3-tap Gaussian filter along horz line.
+      vec3 Horz3(vec2 pos, float off) {
+        vec3 b = Fetch(pos, vec2(-1.0, off));
+        vec3 c = Fetch(pos, vec2(0.0, off));
+        vec3 d = Fetch(pos, vec2(1.0, off));
+        float dst = Dist(pos).x;
+        // Convert distance to weight.
+        float scale = hardPix;
+        float wb = Gaus(dst - 1.0, scale);
+        float wc = Gaus(dst + 0.0, scale);
+        float wd = Gaus(dst + 1.0, scale);
+        // Return filtered sample.
+        return (b * wb + c * wc + d * wd) / (wb + wc + wd);
+      }
 
-    // 5-tap Gaussian filter along horz line.
-    vec3 Horz5(vec2 pos, float off) {
-      vec3 a = Fetch(pos, vec2(-2.0, off));
-      vec3 b = Fetch(pos, vec2(-1.0, off));
-      vec3 c = Fetch(pos, vec2(0.0, off));
-      vec3 d = Fetch(pos, vec2(1.0, off));
-      vec3 e = Fetch(pos, vec2(2.0, off));
-      float dst = Dist(pos).x;
-      // Convert distance to weight.
-      float scale = hardPix;
-      float wa = Gaus(dst - 2.0, scale);
-      float wb = Gaus(dst - 1.0, scale);
-      float wc = Gaus(dst + 0.0, scale);
-      float wd = Gaus(dst + 1.0, scale);
-      float we = Gaus(dst + 2.0, scale);
-      // Return filtered sample.
-      return (a * wa + b * wb + c * wc + d * wd + e * we) / (wa + wb + wc + wd + we);
-    }
+      // 5-tap Gaussian filter along horz line.
+      vec3 Horz5(vec2 pos, float off) {
+        vec3 a = Fetch(pos, vec2(-2.0, off));
+        vec3 b = Fetch(pos, vec2(-1.0, off));
+        vec3 c = Fetch(pos, vec2(0.0, off));
+        vec3 d = Fetch(pos, vec2(1.0, off));
+        vec3 e = Fetch(pos, vec2(2.0, off));
+        float dst = Dist(pos).x;
+        // Convert distance to weight.
+        float scale = hardPix;
+        float wa = Gaus(dst - 2.0, scale);
+        float wb = Gaus(dst - 1.0, scale);
+        float wc = Gaus(dst + 0.0, scale);
+        float wd = Gaus(dst + 1.0, scale);
+        float we = Gaus(dst + 2.0, scale);
+        // Return filtered sample.
+        return (a * wa + b * wb + c * wc + d * wd + e * we) / (wa + wb + wc + wd + we);
+      }
 
-    // Return scanline weight.
-    float Scan(vec2 pos, float off) {
-      float dst = Dist(pos).y;
-      return Gaus(dst + off, hardScan);
-    }
+      // Return scanline weight.
+      float Scan(vec2 pos, float off) {
+        float dst = Dist(pos).y;
+        return Gaus(dst + off, hardScan);
+      }
 
-    // Allow nearest three lines to effect pixel.
-    vec3 Tri(vec2 pos) {
-      vec3 a = Horz3(pos, -1.0);
-      vec3 b = Horz5(pos, 0.0);
-      vec3 c = Horz3(pos, 1.0);
-      float wa = Scan(pos, -1.0);
-      float wb = Scan(pos, 0.0);
-      float wc = Scan(pos, 1.0);
-      return a * wa + b * wb + c * wc;
-    }
+      // Allow nearest three lines to effect pixel.
+      vec3 Tri(vec2 pos) {
+        vec3 a = Horz3(pos, -1.0);
+        vec3 b = Horz5(pos, 0.0);
+        vec3 c = Horz3(pos, 1.0);
+        float wa = Scan(pos, -1.0);
+        float wb = Scan(pos, 0.0);
+        float wc = Scan(pos, 1.0);
+        return a * wa + b * wb + c * wc;
+      }
 
-    // Distortion of scanlines, and end of screen alpha.
-    vec2 Warp(vec2 pos) {
-      pos = pos * 2.0 - 1.0;
-      pos *= vec2(1.0 + (pos.y * pos.y) * warp.x, 1.0 + (pos.x * pos.x) * warp.y);
-      return pos * 0.5 + 0.5;
-    }
+      // Distortion of scanlines, and end of screen alpha.
+      vec2 Warp(vec2 pos) {
+        pos = pos * 2.0 - 1.0;
+        pos *= vec2(1.0 + (pos.y * pos.y) * warp.x, 1.0 + (pos.x * pos.x) * warp.y);
+        return pos * 0.5 + 0.5;
+      }
 
-    // Shadow mask.
-    vec3 Mask(vec2 pos) {
-      pos.x += pos.y * 3.0;
-      vec3 mask = vec3(maskDark, maskDark, maskDark);
-      pos.x = fract(pos.x / 6.0);
-      if (pos.x < 0.333)
-        mask.r = maskLight;
-      else if (pos.x < 0.666)
-        mask.g = maskLight;
-      else
-        mask.b = maskLight;
-      return mask;
-    }
+      // Shadow mask.
+      vec3 Mask(vec2 pos) {
+        pos.x += pos.y * 3.0;
+        vec3 mask = vec3(maskDark, maskDark, maskDark);
+        pos.x = fract(pos.x / 6.0);
+        if (pos.x < 0.333)
+          mask.r = maskLight;
+        else if (pos.x < 0.666)
+          mask.g = maskLight;
+        else
+          mask.b = maskLight;
+        return mask;
+      }
 
-    // Draw dividing bars.
-    float Bar(float pos, float bar) {
-      pos -= bar;
-      return pos * pos < 4.0 ? 0.0 : 1.0;
-    }
+      // Draw dividing bars.
+      float Bar(float pos, float bar) {
+        pos -= bar;
+        return pos * pos < 4.0 ? 0.0 : 1.0;
+      }
 
-    // Entry.
-    void mainImage(out vec4 fragColor, in vec2 fragCoord) {
-      vec2 pos = Warp(fragCoord.xy / iResolution.xy);
-      pos = Warp(fragCoord.xy / iResolution.xy);
-      fragColor.rgb = Tri(pos) * Mask(fragCoord.xy);
-      fragColor.a = fragColor.r; //1.0;
-      fragColor.rgb = ToSrgb(fragColor.rgb);
-    }
+      // Entry.
+      void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+        vec2 pos = Warp(fragCoord.xy / iResolution.xy);
+        pos = Warp(fragCoord.xy / iResolution.xy);
+        fragColor.rgb = Tri(pos) * Mask(fragCoord.xy);
+        fragColor.a = fragColor.r; //1.0;
+        fragColor.rgb = ToSrgb(fragColor.rgb);
+      }
 
-    // END SHADERTOY CODE ---------------------------------------------------------------1}}}
+      // END SHADERTOY CODE ---------------------------------------------------------------1}}}
 
-    // The real main() since this is ported from ShaderToy.
-    void main() {
-      gl_FragColor = texture2D(uTermTex, vTexCoord);
-      mainImage(gl_FragColor, vTexCoord*iResolution);
-    }
+      // The real main() since this is ported from ShaderToy.
+      void main() {
+        gl_FragColor = texture2D(uTermTex, vTexCoord);
+        mainImage(gl_FragColor, vTexCoord*iResolution);
+      }
     </script>
 
     <!-- Compositing vertex shader. Nothing special other than that we're now doing 3D. -->
     <script id="comp-vs" type="x-shader/vertex">
-    uniform mediump vec2 uScreenSize;
-    uniform mediump vec2 uBGSize;
-    attribute vec3 aPosition;
-    attribute vec2 aTexCoord;
-    varying vec2 vTexCoord;
+      uniform mediump vec2 uScreenSize;
+      uniform mediump vec2 uBGSize;
+      attribute vec3 aPosition;
+      attribute vec2 aTexCoord;
+      varying vec2 vTexCoord;
 
-    void main() {
+      void main() {
 
-      // Place the terminal texture over the background to align up with the
-      // background-size: cover emulation we do in the background shader.
-      vec3 pos = aPosition;
-      vec2 s = uScreenSize; // Screen
-      vec2 i = uBGSize; // Image
-      float rs = s.x / s.y;
-      float ri = i.x / i.y;
-      if (rs < ri) {
-        pos.x /= rs;
-      } else {
-        pos.x /= ri;
-        pos.y *= 1.0 + ((rs - ri) / 2.0); // Not perfect but good enough.
+        // Place the terminal texture over the background to align up with the
+        // background-size: cover emulation we do in the background shader.
+        vec3 pos = aPosition;
+        vec2 s = uScreenSize; // Screen
+        vec2 i = uBGSize; // Image
+        float rs = s.x / s.y;
+        float ri = i.x / i.y;
+        if (rs < ri) {
+          pos.x /= rs;
+        } else {
+          pos.x /= ri;
+          pos.y *= 1.0 + ((rs - ri) / 2.0); // Not perfect but good enough.
+        }
+
+        gl_Position = vec4(pos, 1.0);
+        vTexCoord = aTexCoord;
       }
-
-      gl_Position = vec4(pos, 1.0);
-      vTexCoord = aTexCoord;
-    }
     </script>
 
     <!-- Compositing vertex shader. Nothing special. -->
     <script id="comp-fs" type="x-shader/fragment">
-    uniform mediump vec2 uScreenSize;
-    uniform sampler2D uPostTex;
-    varying mediump vec2 vTexCoord;
+      uniform mediump vec2 uScreenSize;
+      uniform sampler2D uPostTex;
+      varying mediump vec2 vTexCoord;
 
-    void main() {
-      gl_FragColor = texture2D(uPostTex, vTexCoord);
+      void main() {
+        gl_FragColor = texture2D(uPostTex, vTexCoord);
 
-      // The fancy CRT shader works against a black background and the alpha channel is lost. Using the
-      // red value as alpha looks good enough.
-      gl_FragColor.a = gl_FragColor.r;
+        // The fancy CRT shader works against a black background and the alpha channel is lost. Using the
+        // red value as alpha looks good enough.
+        gl_FragColor.a = gl_FragColor.r;
 
-      // Uncomment to show a white border, which helps with positioning:
-      //if (vTexCoord.x < 0.005 || vTexCoord.x > 0.995 || vTexCoord.y < 0.005 || vTexCoord.y > 0.995) gl_FragColor += 0.5;
-    }
+        // Uncomment to show a white border, which helps with positioning:
+        //if (vTexCoord.x < 0.005 || vTexCoord.x > 0.995 || vTexCoord.y < 0.005 || vTexCoord.y > 0.995) gl_FragColor += 0.5;
+      }
     </script>
 
     <!--
@@ -368,104 +332,104 @@ canvas {
       Calculates the UVs needed to look up font bitmap data.
     -->
     <script id="term-vs" type="x-shader/vertex">
-    uniform float uTime;
-    uniform vec2 uScreenSize;
-    uniform vec2 uGridSize;
-    attribute vec2 aGeo;
-    attribute vec2 aChar;
-    varying vec2 vCharCoord;
-    varying vec2 vArea;
-    varying float vAttr;
+      uniform float uTime;
+      uniform vec2 uScreenSize;
+      uniform vec2 uGridSize;
+      attribute vec2 aGeo;
+      attribute vec2 aChar;
+      varying vec2 vCharCoord;
+      varying vec2 vArea;
+      varying float vAttr;
 
-    const float EPSILON = 0.000001;
+      const float EPSILON = 0.000001;
 
-    const float ATTR_CURSOR = 1.0;
-    const float ATTR_INVERSE = 2.0;
-    const float ATTR_BLINK = 4.0;
+      const float ATTR_CURSOR = 1.0;
+      const float ATTR_INVERSE = 2.0;
+      const float ATTR_BLINK = 4.0;
 
-    void main() {
-      // Geometry looks like this:
-      //
-      // ---------.
-      // |    |  /
-      // |    | /
-      // |____|/
-      // |    /
-      // |   /
-      // |  /
-      // | /
-      // |/
+      void main() {
+        // Geometry looks like this:
+        //
+        // ---------.
+        // |    |  /
+        // |    | /
+        // |____|/
+        // |    /
+        // |   /
+        // |  /
+        // | /
+        // |/
 
-      // Char is our character space triangle vertex. (0,0) means first col & row.
-      float i = aGeo[0];
-      float row = floor(i/uGridSize.x + EPSILON);
-      float col = i - row * uGridSize.x;
-      vec2 char = vec2(col, row);
-      float k = aGeo[1];
-      if (k == 1.0) char.x += 1.0;
-      if (k == 2.0) char.y += 1.0;
+        // Char is our character space triangle vertex. (0,0) means first col & row.
+        float i = aGeo[0];
+        float row = floor(i/uGridSize.x + EPSILON);
+        float col = i - row * uGridSize.x;
+        vec2 char = vec2(col, row);
+        float k = aGeo[1];
+        if (k == 1.0) char.x += 1.0;
+        if (k == 2.0) char.y += 1.0;
 
-      // Area is also a similar triangle, but used by the fragment shader.
-      vArea = vec2(0.0, 0.0);
-      if (k == 1.0) vArea.x += 2.0;
-      if (k == 2.0) vArea.y += 2.0;
+        // Area is also a similar triangle, but used by the fragment shader.
+        vArea = vec2(0.0, 0.0);
+        if (k == 1.0) vArea.x += 2.0;
+        if (k == 2.0) vArea.y += 2.0;
 
-      // Pos converts the char coords to clip space.
-      vec2 pos = char;
-      if (k == 1.0) pos.x += 1.3; // Tweak character width.
-      if (k == 2.0) pos.y += 1.0; // Tweak character height.
-      pos = (pos / uGridSize * 2.0) - 1.0;
-      pos.y *= -1.0;
-      gl_Position = vec4(pos, 0, 1);
+        // Pos converts the char coords to clip space.
+        vec2 pos = char;
+        if (k == 1.0) pos.x += 1.3; // Tweak character width.
+        if (k == 2.0) pos.y += 1.0; // Tweak character height.
+        pos = (pos / uGridSize * 2.0) - 1.0;
+        pos.y *= -1.0;
+        gl_Position = vec4(pos, 0, 1);
 
-      // The second item of aChar is a bitmask of character attributes.
-      vAttr = aChar[1];
+        // The second item of aChar is a bitmask of character attributes.
+        vAttr = aChar[1];
 
-      // Calculate the 128x128px (16x16 grid) Apple 2 sprite map coords.
-      i = aChar[0] - 32.0;
-      col = mod(i, 16.0) / 16.0;
-      row = floor(i/16.0) / 16.0;
-      // If this char is the cursor, make it blink the cursor symbol.
-      if (mod(vAttr / ATTR_CURSOR, 2.0) >= 1.0 && mod(uTime*3.5, 2.0) <= 1.0) {
-        col = 15.0/16.0;
-        row = 5.0/16.0;
+        // Calculate the 128x128px (16x16 grid) Apple 2 sprite map coords.
+        i = aChar[0] - 32.0;
+        col = mod(i, 16.0) / 16.0;
+        row = floor(i/16.0) / 16.0;
+        // If this char is the cursor, make it blink the cursor symbol.
+        if (mod(vAttr / ATTR_CURSOR, 2.0) >= 1.0 && mod(uTime*3.5, 2.0) <= 1.0) {
+          col = 15.0/16.0;
+          row = 5.0/16.0;
+        }
+        vCharCoord = vec2(col, row);
+        // Remember, make a triangle, and make large enough to cover the character rectangle.
+        if (k == 1.0) vCharCoord.x += 2.0/16.0;
+        if (k == 2.0) vCharCoord.y += 2.0/16.0;
       }
-      vCharCoord = vec2(col, row);
-      // Remember, make a triangle, and make large enough to cover the character rectangle.
-      if (k == 1.0) vCharCoord.x += 2.0/16.0;
-      if (k == 2.0) vCharCoord.y += 2.0/16.0;
-    }
     </script>
 
     <!-- Terminal fragment shader. The vertex shader did the hard work, so this just draws the character. -->
     <script id="term-fs" type="x-shader/fragment">
-    uniform float uTime;
-    uniform sampler2D uFont;
-    varying vec2 vCharCoord;
-    varying vec2 vArea;
-    varying float vAttr;
+      uniform float uTime;
+      uniform sampler2D uFont;
+      varying vec2 vCharCoord;
+      varying vec2 vArea;
+      varying float vAttr;
 
-    const float ATTR_CURSOR = 1.0;
-    const float ATTR_INVERSE = 2.0;
-    const float ATTR_BLINK = 4.0;
+      const float ATTR_CURSOR = 1.0;
+      const float ATTR_INVERSE = 2.0;
+      const float ATTR_BLINK = 4.0;
 
-    const vec4 COLOR = vec4(.95, .374, .025, 1.0); // Amber text color
+      const vec4 COLOR = vec4(.95, .374, .025, 1.0); // Amber text color
 
-    const float EPSILON = 0.000001;
+      const float EPSILON = 0.000001;
 
-    void main() {
-      // Trim the points of the triangle so we only draw the rectangle.
-      // Without EPSILON we get a few gaps in inversed lines.
-      if (vArea.x > 1.0 + EPSILON || vArea.y > 1.0 + EPSILON) discard;
+      void main() {
+        // Trim the points of the triangle so we only draw the rectangle.
+        // Without EPSILON we get a few gaps in inversed lines.
+        if (vArea.x > 1.0 + EPSILON || vArea.y > 1.0 + EPSILON) discard;
 
-      bool value = texture2D(uFont, vCharCoord).r >= 1.0;
-      bool inverse = mod(vAttr / ATTR_INVERSE, 2.0) >= 1.0; // No bit shifting in GLSL. Maybe I'm wrong.
+        bool value = texture2D(uFont, vCharCoord).r >= 1.0;
+        bool inverse = mod(vAttr / ATTR_INVERSE, 2.0) >= 1.0; // No bit shifting in GLSL. Maybe I'm wrong.
 
-      // Comment to show only filled bars of text. Good for positioning.
-      if ((value && inverse) || (!value && !inverse)) discard;
+        // Comment to show only filled bars of text. Good for positioning.
+        if ((value && inverse) || (!value && !inverse)) discard;
 
-      gl_FragColor = COLOR;
-    }
+        gl_FragColor = COLOR;
+      }
     </script>
 
     <script src="/js/deps.min.js"></script>

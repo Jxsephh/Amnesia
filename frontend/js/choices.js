@@ -80,10 +80,10 @@ $(document).ready(function() {
   termWriteSlow(term,
     '    _                                       _         \n' +
     '   / \\     _ __ ___    _ __     ___   ___  (_)   __ _ \n' +
-    '  / _ \\   | \'_ ` _ \\  | \'_ \\   / _ \\ / __| | |  / _` |\n' +
+    '  / _ \\   | \'_ ` _ \\  | \'_ \\   / _ \\ / __| | |  / _` |              Version 1.0\n' +
     ' / ___ \\  | | | | | | | | | | |  __/ \\__ \\ | | | (_| |\n' +
-    '/_/   \\_\\ |_| |_| |_| |_| |_|  \\___| |___/ |_|  \\__,_|\n' +
-    '\n\nWould you like to start a [N]ew game, or [R]esume an existing one?\n> '
+    '/_/   \\_\\ |_| |_| |_| |_| |_|  \\___| |___/ |_|  \\__,_|           Deluxe Edition\n' +
+    '\nWould you like to start a [N]ew game, or [R]esume an existing one?\n> '
   );
 });
 
