@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from flask_restful import Api, Resource, reqparse
 import json, ast
 
@@ -18,9 +18,41 @@ with open("api/nodes.json", 'r') as f:
 
 class Story(Resource):
     def get(self, id):
-        for i in range(len(nodes["nodes"])): #For every node, find the matching ID and return the node with this ID
-            if(int(id) == nodes["nodes"][i]["id"]):
-                return nodes["nodes"][i], 200
+        nodeArr = nodes['nodes']
+
+        for i in range(len(nodeArr)): #For every node, find the matching ID and return the node with this ID
+            if(int(id) == nodeArr[i]["id"]):
+                node = nodeArr[i]
+
+                # is there code to execute?
+                if 'code' in node:
+                    # deserialize state
+                    stateString = request.args.get('state')
+                    state = json.loads(stateString)
+
+                    print(state)
+
+                    # run code
+                    code = node['code']
+                    nodeInfo = {
+                        'id': id
+                    }
+
+                    exec(code, {
+                        'state': state,
+                        'info': nodeInfo
+                    })
+
+                    # return state and node
+
+                    return {
+                        'node': nodeInfo,
+                        'state': state
+                    }, 200
+                else:
+                    return {
+                        'node': node
+                    }, 200
 
         return "Node not found", 404
     def post(self, id):

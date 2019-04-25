@@ -29,29 +29,50 @@ function goToNodeId(nextId) {
   drawStatusBar(true);
 
   // fetch response
-  $.get('/node/' + nextId).done(function(data) {
-    window.currentChoice = data;
-    drawStatusBar();
+  $.get('/node/' + nextId, {
+    state: JSON.stringify(window.gameState)
+  }).done(function(data) {
+    // get the node
+    var node = data.node;
+    window.currentChoice = node;
 
-    // format message
-    term.addChar('\n');
-    var message = data.dialogue;
-
-    // print options
-    var prompt = '\n';
-
-    for(var i = 0; i < data.choices.length; i++) {
-      var choice = data.choices[i];
-
-      prompt += (i + 1) + ') ' + choice.title + '\n';
+    // update game state if needed
+    if(data.state) {
+      window.gameState = data.state;
     }
 
-    prompt += '> ';
+    drawStatusBar();
+    term.addChar('\n');
 
-    // finally, write it
-    termWriteSlow(term, message, Terminal.ATTR_INVERSE | Terminal.ATTR_WRAP, function() {
-      termWriteSlow(term, prompt);
-    });
+    // save game state
+    window.localStorage.setItem('game', JSON.stringify({
+      'currentNodeId': new Number(node.id),
+      'state': window.gameState,
+    }));
+
+    // is it a multi-dialog message?
+    if(node.dialogue instanceof Array) {
+      alert('unimplemented');
+    } else {
+      // format message
+      var message = node.dialogue; // TODO: handle arrays
+
+      // print options
+      var prompt = '\n';
+
+      for(var i = 0; i < node.choices.length; i++) {
+        var choice = node.choices[i];
+
+        prompt += (i + 1) + ') ' + choice.title + '\n';
+      }
+
+      prompt += '> ';
+
+      // finally, write it
+      termWriteSlow(term, message, Terminal.ATTR_INVERSE | Terminal.ATTR_WRAP, function() {
+        termWriteSlow(term, prompt);
+      });
+    }
   }).fail(function(error) {
     console.log(error);
 
@@ -61,6 +82,13 @@ function goToNodeId(nextId) {
     // alert('ajax error');
   });
 };
+
+/**
+ * Hanndles a node with multiple dialogue pieces.
+ */
+function handleMultiDialog(node, state) {
+
+}
 
 
 
@@ -102,7 +130,37 @@ function doCommand(cmd) {
     if(window.gameState.currentScreen === 'start') {
       // resume game?
       if(cmd === 'r') {
-        alert('resume game, present login ui here');
+        // is there a game to resume
+        var resumeData = window.localStorage.getItem('game');
+
+        if(resumeData == null) {
+          // print message
+          termWriteSlow(term, 'We couldn\'t find a game to restore :(\n', Terminal.ATTR_INVERSE, function() {
+            termWriteSlow(term, 'If you want to start a new game, type "n" and hit return.\n> ');
+          });
+        } else {
+          // try to decode it
+          var resumeState = JSON.parse(resumeData);
+          console.log(resumeState);
+
+          // error decoding
+          if(resumeState === null) {
+            console.log('corrupted resume data: ', resumeData);
+
+            termWriteSlow(term, 'Local game state appears to be corrupted! Clear local storage to fix\n', Terminal.ATTR_INVERSE, function() {
+              termWriteSlow(term, 'If you want to start a new game, type "n" and hit return.\n> ');
+            });
+          }
+          // success, resume game
+          else {
+            window.gameState = resumeState.state;
+
+            // print message
+            termWriteSlow(term, 'Resuming your game. Have fun!\n\n\n', Terminal.ATTR_INVERSE, function() {
+              goToNodeId(resumeState.currentNodeId);
+            });
+          }
+        }
         return true;
       }
       // new game?
@@ -113,7 +171,7 @@ function doCommand(cmd) {
           window.gameState.started = true;
           window.gameState.currentScreen = 'game';
 
-          goToNodeId(startNode)
+          goToNodeId(startNode);
         });
 
         return true;

@@ -11,6 +11,10 @@
              {
                 "title":"Who is this?",
                 "nextID":2
+             },
+             {
+                "title":"Python test bitches",
+                "nextID":5
              }
           ]
        },
@@ -27,6 +31,10 @@
                 "nextID":4
              }
           ]
+       },
+       {
+          "id":5,
+          "code":"info['dialogue'] = 'blah blah blah'\ninfo['choices'] = [{'title': 'choice 1 (goes to id 9)', 'nextID':9}, {'title': 'choice 2 (goes to id 7)', 'nextID':7}, {'title': 'choice 3 (repeats this)', 'nextID':5}]\nstate['potato'] = 3"
        },
        {
           "id":2,

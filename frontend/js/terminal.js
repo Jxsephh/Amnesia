@@ -223,6 +223,9 @@ function update () {
 function termWriteSlow(term, string, attrs, callback) {
   var timer = 10;
 
+  // first, inhibit input
+  window.inhibitInput = true;
+
   // wrap string
   if((attrs & Terminal.ATTR_WRAP)) {
     string = string.match(RegExp('.{1,' + (80 - 2) + '}(\\s|$)', 'g')).join('\n')
@@ -239,17 +242,26 @@ function termWriteSlow(term, string, attrs, callback) {
 
         // run callback if specified (null if not at end of string)
         if(callback) callback();
-    }, timer, term, char, (i >= (string.length - 1)) ? callback : null);
+    }, timer, term, char, (i >= (string.length - 1)) ? function() {
+      // re-enable input
+      window.inhibitInput = false;
+      if(callback) callback();
+    } : null);
     timer += 10;
   }
 }
 
 
-var sessionID = sessionStorage.getItem('sessionID')
+/**
+ * Install an event keydown handler
+ */
 var inputBuffer = ''
 
 window.addEventListener('keydown', function (e) {
   if (e.keyCode === 13) { // Enter key
+    /// if inhibiting input, abort
+    if(window.inhibitInput === true) return;
+
     // handle command
     term.addChar('\n')
     var message = inputBuffer
@@ -272,12 +284,18 @@ window.addEventListener('keydown', function (e) {
     // also, ignore the event
     e.preventDefault();
   } else if (e.key.length === 1) { // Modifier keys have long names.
+    /// if inhibiting input, abort
+    if(window.inhibitInput === true) return;
+
     term.addChar(e.key)
     inputBuffer += e.key
   } else return
   update()
 })
 window.focus()
+
+
+
 
 /**
  * Provides requestAnimationFrame in a cross browser way.
