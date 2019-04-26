@@ -99,7 +99,7 @@ $(document).ready(function() {
   // set initial game state
   window.gameState = {
     started: false,
-    currentScreen: 'start',
+    currentScreen: 'login_user',
   };
 
   // draw UI
@@ -111,7 +111,8 @@ $(document).ready(function() {
     '  / _ \\   | \'_ ` _ \\  | \'_ \\   / _ \\ / __| | |  / _` |              Version 1.0\n' +
     ' / ___ \\  | | | | | | | | | | |  __/ \\__ \\ | | | (_| |\n' +
     '/_/   \\_\\ |_| |_| |_| |_| |_|  \\___| |___/ |_|  \\__,_|           Deluxe Edition\n' +
-    '\nWould you like to start a [N]ew game, or [R]esume an existing one?\n> '
+    '\nPlease enter your username >'
+    // '\nWould you like to start a [N]ew game, or [R]esume an existing one?\n> '
   );
 });
 
@@ -126,8 +127,28 @@ function doCommand(cmd) {
 
   // if game hasn't started, we're at the login screen
   if(window.gameState.started === false) {
+    // are we at the username screen?
+    if(window.gameState.currentScreen === 'login_user') {
+      termWriteSlow(term, 'Please enter your password >');
+
+      // go to password screen
+      window.inhibitEcho = true;
+      window.gameState.currentScreen = 'login_pass';
+
+      return true;
+    }
+    // are we at the password screen?
+    else if(window.gameState.currentScreen === 'login_pass') {
+      termWriteSlow(term, '\nWould you like to start a [N]ew game, or [R]esume an existing one?\n> ');
+
+      // go to start screen
+      window.inhibitEcho = false;
+      window.gameState.currentScreen = 'start';
+
+      return true;
+    }
     // are we at the start screen?
-    if(window.gameState.currentScreen === 'start') {
+    else if(window.gameState.currentScreen === 'start') {
       // resume game?
       if(cmd === 'r') {
         // is there a game to resume

@@ -287,7 +287,12 @@ window.addEventListener('keydown', function (e) {
     /// if inhibiting input, abort
     if(window.inhibitInput === true) return;
 
-    term.addChar(e.key)
+    if(window.inhibitEcho) {
+      term.addChar('\x95')
+    } else {
+      term.addChar(e.key)
+    }
+
     inputBuffer += e.key
   } else return
   update()
