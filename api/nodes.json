@@ -10,11 +10,7 @@
              },
              {
                 "title":"Who is this?",
-                "nextID":2
-             },
-             {
-                "title":"Python test bitches",
-                "nextID":5
+                "nextID":1
              }
           ]
        },
@@ -28,7 +24,7 @@
              },
              {
                 "title":"How can that be?",
-                "nextID":4
+                "nextID":2
              }
           ]
        },
@@ -38,15 +34,15 @@
        },
        {
           "id":2,
-          "dialogue":"I.. I'm not sure I haven't really thought about it.",
+          "dialogue":"I.. I'm not sure. I haven't really thought about it.",
           "choices":[
             {
                "title":"What do you mean you aren't sure?",
-               "nextID":5
+               "nextID":3
             },
             {
                "title":"That's not really helpful..",
-               "nextID":6
+               "nextID":3
             }
          ]
        },
@@ -69,12 +65,12 @@
          "dialogue":"Okay, seems like a good idea. ... There isn't a whole lot left... I'm not sure how I survived this. ... There's no sign of a pilot(or anything left of one). Was I the pilot?",
          "choices":[
            {
-              "title":"Do you know how to fly a helicopter?",
-              "nextID":9
+              "title":"Maybe you should get out of there...",
+              "nextID":14
            },
            {
-              "title":"I don't know, were you?",
-              "nextID":9
+              "title":"Don't worry about that now, keep looking.",
+              "nextID":14
            }
         ]
       },
@@ -88,9 +84,436 @@
            },
            {
               "title":"Don't worry about that now, keep looking.",
-              "nextID":8
+              "nextID":81
            }
         ]
+      },
+      {
+         "id":81,
+         "dialogue":"Let's see here... I see something that looks like a briefcase under some wreckage. Let me see if I can....OOF...Well, good news is I found some fancy-looking briefcase, bad news is I cut my hand pretty bad...",
+         "choices":[
+            {
+               "title":"Can you stop the bleeding?",
+               "nextID":82
+            },
+            {
+               "title":"Look for something to wrap it",
+               "nextID":82
+            }
+         ]
+      },
+      {
+         "id":82,
+         "dialogue":"Let me see if I can tear my sleeve....Got it! That should do it. Maybe I'm a doctor, or MacGyver.....huh, that's odd.....there's a tattoo on my arm.",
+         "choices":[
+            {
+               "title":"What's it say?",
+               "nextID":83
+            }            
+         ]
+      },
+      {
+         "id":83,
+         "dialogue":"It says 'Patton, Will'...Is that my name?",
+         "choices":[
+            {
+               "title":"It must be.",
+               "nextID":84
+            }
+         ]
+      },
+      {
+         "id":84,
+         "dialogue":"Wow... Something about it just feels right...Call me Will, I guess.",
+         "choices":[
+            {
+               "title":"Okay, Will",
+               "nextID":14
+            }
+         ]
+      },
+      {
+         "id":8,
+         "dialogue":"Well, I guess this is as good a direction as any. I'll hit you back when I find something.",
+         "choices":[
+            {
+               "title":"...",
+               "nextID":10
+            }
+         ]
+      },    
+      {
+         "id":10,
+         "dialogue":"So... I found a cave... But it looks creepy. Should I just pray that nothing lives here?",
+         "choices":[
+            {
+               "title":"Absolutely.",
+               "nextID":12
+            },
+            {
+               "title":"You should call out, just in case.",
+               "nextID":11
+            }
+         ]
+      },
+      {
+         "id":11,
+         "dialogue":"Home sweet home... Do you think it's safe that I build a fire? I'm cold, it might help.",
+         "choices":[
+            {
+               "title":"Yes, go for it.",
+               "nextID":13
+            },
+            {
+               "title":"Don't risk being seen.",
+               "nextID":15
+            }
+         ]
+      },
+      {
+         "id":12,
+         "dialogue":"Good idea, let's try it....(shouts)....No response, guess we're staying the night here.",
+         "choices":[
+            {
+               "title":"...",
+               "nextID":11
+            }
+         ]
+      },
+      {
+         "id":13,
+         "dialogue":"Okay, I'll  go look for some wood and kindling.....................Perfect! Got the fire started, can't believe it took the cavemen that long to figure this out. I should probably get some sleep; I'll get back to you in the morning, if I make it....",
+         "choices":[
+            {
+               "title":"...",
+               "nextID":16
+            }
+         ]
+
+
+      },
+      {
+         "id":14,
+         "dialogue":"Sun's getting pretty low, I should probably find shelter sometime soon.",
+         "choices":[
+            {
+               "title":"Good idea.",
+               "nextID":8
+            }
+         ]
+      },
+      {
+         "id":15,
+         "dialogue":"Smart. Who knows what's out there. I'll just curl up and try to stay warm. See you in the morning!",
+         "choices":[
+            {
+               "title":"...",
+               "nextID":16
+            }
+         ]
+      },
+      {
+         "id":16,
+         "dialogue":"Okay, please be awake. It's pitch black out and there's howling.....It started off far away, but it's getting closer. They might be coming back to their den... Should I try and get out of here before they get back?",
+         "choices":[
+            {
+               "title":"No, you need sleep. They won't bother you.",
+               "nextID":17
+            },
+            {
+               "title":"You should go",
+               "nextID":18
+            }
+         ]
+      },
+      {
+         "id":17,
+         "dialogue":"Yeah you're right, sleep... Sorry for waking you up.........",
+         "choices":[
+            {
+               "title":"Hello?",
+               "nextID":19
+            },
+            {
+               "title":"You there?",
+               "nextID":19
+            }
+         ]
+      },
+      {
+         "id":19,
+         "dialogue":"So remember how you said that howling wasn't a big deal. It was...It IS...They're right outside. I'm making a break for it!",
+         "choices":[
+            {
+               "title":"NO WAIT",
+               "nextID":20
+            },
+            {
+               "title":"HURRY",
+               "nextID":20
+            }
+         ]
+
+      },
+      {
+         "id":20,
+         "dialogue":"...(gasps)...they're chasing me.....I don't...know how much...more I can give chase....I'm sorry.....GAME OVER: THE WOLVES GOT WILL!",
+         "choices":[
+            {
+               "title":"Continue.",
+               "nextID":100
+            }
+         ]
+         
+      },
+      {
+         "id":18,
+         "dialogue":"You're right, I'm out. Where do I go now??? Should I run??",
+         "choices":[
+            {
+               "title":"YES GO",
+               "nextID":21
+            },
+            {
+               "title":"Do you see any trees?",
+               "nextID":22
+            }
+         ]
+
+      },
+      {
+         "id":21,
+         "dialogue":"Alright, I'll let you know when I'm far away!",
+         "choices":[
+            {
+               "title":"Be careful, Will",
+               "nextID":20
+            }
+         ]         
+      },
+      {
+         "id":22,
+         "dialogue":"Yes, why? Oh...OH! Wolves can't climb...............Well, I'm safe. Guess I'll wait till morning to crawl down....I'll talk to you then.",
+         "choices":[
+            {
+               "title":"Goodnight.",
+               "nextID":23
+            }
+         ]
+
+      },
+      {
+         "id":23,
+         "dialogue":"Good morning friend, looks like I made it through the night. I'm looking around; it seems like we're in a forest on the hillside. I've decided that I have 2 real options. I can go back to the crash site and look around a little more, or I can climb uphill to higher ground, and maybe I'll be able to see something useful.",
+         "choices":[
+            {
+               "title":"Go back",
+               "nextID":24
+            },
+            {
+               "title":"High ground always wins",
+               "nextID":25
+            }
+         ]
+
+      },
+      {
+         "id":24,
+         "dialogue":"I've been digging around for about 20 minutes now, I really don't think there's anything else we can get. I think I'm just going to start marching back uphill. Here we go.....",
+         "choices":[
+            {
+               "title":"...",
+               "nextID":25
+            }
+         ]
+      },
+      {
+         "id":25,
+         "dialogue":"I've been hiking for a while, getting pretty parched over here. I'm gonna take a drink from that water bottle I found in the suitcase. Shouldn't habe too much further to go, I hope. I'll let you know when I find something....",
+         "choices":[
+            {
+               "title":"YES GO",
+               "nextID":26
+            }
+         ]
+
+      },
+      {
+         "id":26,
+         "dialogue":"Hey, you there? I think I found something. Well, I definitely found SOMETHING. And by something, I mean a scary-looking fence. Not the kind you see in between houses either, this one is tall, with barbed wire at the top for good measure. I can't climb over it, but it's the first glimpse of hope I've seen, so what should I do?",
+         "choices":[
+            {
+               "title":"Go left",
+               "nextID":27
+            },
+            {
+               "title":"Go right",
+               "nextID":27
+            }
+         ]
+      },
+      {
+         "id":27,
+         "dialogue":"You got it, chief.........So I found the corner, good news is, it turns uphill, so I'm on the outside, I'll keep trying to find a way in. Patton out.",
+         "choices":[
+            {
+               "title":"Got it.",
+               "nextID":28
+            }
+         ]
+
+      },
+      {
+         "id":28,
+         "dialogue":"GOOD NEWS!!!! I found a drainpipe! It's not very big, but I think I could squeeze in, and it goes right under the fence. I don't see where it exits, but I'm going to go ahead and go in.",
+         "choices":[
+            {
+               "title":"Try not to get stuck.",
+               "nextID":29
+            },
+            {
+               "title":"Don't forget how you came in, just in case it's a dead end.",
+               "nextID":29
+            }
+         ]
+      },
+      {
+         "id":29,
+         "dialogue":"Good news: I found an exit grate! Bad news: It's fixed SHUT, I can't get it open.",
+         "choices":[
+            {
+               "title":"Push harder",
+               "nextID":30
+            },
+            {
+               "title":"Work smarter, not harder, try and loosen it before banging on it.",
+               "nextID":30
+            }
+         ]
+      },
+      {
+         "id":30,
+         "dialogue":"Okay.......ARGGGHHHH......So the grate is off, but so is my shoulder, I think I dislocated it. I think I saw some painkillers in the med kit, should I take one?",
+         "choices":[
+            {
+               "title":"You've earned it.",
+               "nextID":31
+            },
+            {
+               "title":"You should save them for later, who knows what lies ahead.",
+               "nextID":32
+            }
+         ]
+      },
+      {
+         "id":31,
+         "dialogue":"You're right, I just crawled through the waste and came out the other side. I've only got 2 pills left though, I'll need to be careful.",
+         "choices":[
+            {
+               "title":"Sure thing.",
+               "nextID":33
+            }
+         ]
+      },
+      {
+         "id":32,
+         "dialogue":"Yeah, you're probably right. I can live with this. If I live at all. Ah, I love my morbid sense of humor.",
+         "choices":[
+            {
+               "title":"At least you're being positive",
+               "nextID":33
+            },
+            {
+               "title":"That's the spirit.",
+               "nextID":33
+            }
+         ]
+      },
+      {
+         "id":33,
+         "dialogue":"This place gives me the heebie jeebies. It's a....it's a house, like a little log cabin. But longer, cut into the hillside, very ordinary. I wonder why whoever lives here wanted such a high fence. There's the fron tdoor, should I try it, or take a look around back?",
+         "choices":[
+            {
+               "title":"Try the door.",
+               "nextID":34
+            },
+            {
+               "title":"See what's around back.",
+               "nextID":35
+            }
+         ]
+
+      },
+      {
+         "id":34,
+         "dialogue":"It's unlocked. So this is....creepy. It's a long hallway, only door I see is at the far end, and the lights are flickering a bit. Seems like a textbook movie scene where something jumps at me and murders me. But also....it feels...familiar. I don't know why, but I feel like I've been here before. What do you think I should do?",
+         "choices":[
+            {
+               "title":"Go in; maybe someone here knows you.",
+               "nextID":36
+            },
+            {
+               "title":"Back out; search the perimeter first.",
+               "nextID":35
+            }
+         ]
+      },
+      {
+         "id":35,
+         "dialogue":"Good idea... better to make sure everything's clear back here first.... Huh.. that's strange. The firewood stack is just...out in the open. If it rains, it'd get soaked, why wouldn't they just put it on the porch. WOAH.....Remember how I told you this place looked bigger than a log cabin in the woods should? I found out why....IT HAS A HELIPAD. ON THE ROOF.",
+         "choices":[
+            {
+               "title":"Maybe this is where your journey began?",
+               "nextID":37
+            },
+            {
+               "title":"Who knows why they would need a helipad?",
+               "nextID":37
+            }
+         ]
+
+      },
+      {
+         "id":36,
+         "dialogue":"Alright.... scary hallway. (THUD). Doors aren't supposed to close on themselves are they? Aaaaaand it's locked, of course. No turning back now.",
+         "choices":[
+            {
+               "title":"Well, this is getting interesting.",
+               "nextID":39
+            }         
+         ]
+
+      },
+      {
+         "id":37,
+         "dialogue":"Who knows....something feels, wrong. Oh look, a crowbar, now I can defend myself. I saw a window on the side of the house on my way over here, I could bust in like a thief, or go through that front door.",
+         "choices":[
+            {
+               "title":"Use the window",
+               "nextID":38
+            },
+            {
+               "title":"Door seems nice.",
+               "nextID":34
+            }
+         ]
+      },
+      {
+         "id":39,
+         "dialogue":"You got it. (CRASH). Cool, I'm in. Huh...the room's empty, like no furniture, wallpaper, doors, nothing. This place is not a home. Guess the only thing left to do is use the front door. Seems like a trap, but what other option do I have?",
+         "choices":[
+            {
+               "title":"RUN",
+               "nextID":40
+            },
+            {
+               "title":"You don't really have any...",
+               "nextID":40
+            }
+         ]
+
+
       }
+
     ]
  }
