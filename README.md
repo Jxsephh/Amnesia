@@ -9,7 +9,6 @@ For this current working version:
 
 ```
 $ python run.py
-
 ```
 
 Note that you must install dependencies (see below) and compile the frontend (see the `README` file in the frontend directory) before the game will run and work.

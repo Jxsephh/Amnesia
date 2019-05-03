@@ -30,7 +30,7 @@
        },
        {
           "id":5,
-          "code":"info['dialogue'] = 'blah blah blah'\ninfo['choices'] = [{'title': 'choice 1 (goes to id 9)', 'nextID':9}, {'title': 'choice 2 (goes to id 7)', 'nextID':7}, {'title': 'choice 3 (repeats this)', 'nextID':5}]\nstate['potato'] = 3"
+          "code":"info['dialogue'] = 'Oof, I've cut myself on some metal edge....\ninfo['choices'] = [{'title': 'You'll be fine, ration your meds.', 'nextID':9}, {'title': 'Heal up', 'nextID':7}, 'nextID':5}]\nstate['medkit'] = 0"
        },
        {
           "id":2,
@@ -332,7 +332,7 @@
          "dialogue":"I've been hiking for a while, getting pretty parched over here. I'm gonna take a drink from that water bottle I found in the suitcase. Shouldn't habe too much further to go, I hope. I'll let you know when I find something....",
          "choices":[
             {
-               "title":"YES GO",
+               "title":"Sounds good.",
                "nextID":26
             }
          ]
@@ -511,9 +511,45 @@
                "nextID":40
             }
          ]
-
-
-      }
+      },
+      {
+         "id":40,
+         "dialogue":"So uh... This place is pretty creepy. But I'm at the far door now. What should I do?",
+         "choices":[
+            {
+               "title":"Open it.",
+               "nextID":41
+            },
+            {
+               "title":"Wait a minute.",
+               "nextID":41
+            }
+         ]
+      },
+      {
+         "id":41,
+         "dialogue":"I guess I don't have any other options, here goes... [strange voice: Hello Will] Who are you? [strange voice: Who I am isn't important, Will. It's who YOU are.] And what's so important about me? [strange voice: We've been watching you since you stepped foot out of the door. You've done well, now it's time for Phase 2.] What the hell is Phase 2? [strange voice: We need you to keep surviving, no matter the cost. There's much more than you know staked on your life.]" ,
+         "choices":[
+            {
+               "title":"Will, get the hell out of there.",
+               "nextID":42
+            },
+            {
+               "title":"Will, RUN.",
+               "nextID":42
+            }
+         ]
+      },
+      {
+         "id":42,
+         "dialogue":"[strange voice: Our time is up, it's time for Phase 2. You must leave.] (gunshots ring out). [strange voice: I don't know who I'm speaking to, but you friend Will must be on his own now, our future dep-.] (gunshots) (signal lost)....",
+         "choices":[
+            {
+               "title":"GAME OVER. WILL SURVIVED....FOR NOW!",
+               "nextID":1000
+            }            
+         ]
+      },
 
     ]
  }
