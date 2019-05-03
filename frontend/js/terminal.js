@@ -1,5 +1,5 @@
 var Terminal = (function () {
-  function Terminal () {
+  function Terminal() {
     // set up size and cursor location
     this.width = 80;
     this.height = 25;
@@ -100,13 +100,13 @@ var Terminal = (function () {
     var i = this.cursor.y * this.width + this.cursor.x;
 
     // write character into buffer if not a newline
-    if (c !== '\n') {
+    if(c !== '\n') {
       this.buffer[i] = c;
       this.attrs[i] = attrs || 0;
     }
 
     // handle going to the new line if we reach the edge
-    if (c === '\n' || this.cursor.x >= this.width - 1) {
+    if(c === '\n' || this.cursor.x >= this.width - 1) {
       this.cursor.x = 0;
       this.cursor.y++;
     } else {
@@ -114,14 +114,14 @@ var Terminal = (function () {
     }
 
     // scroll if needed
-    if (this.cursor.y >= (this.height - 1)) {
+    if(this.cursor.y >= (this.height - 1)) {
       this.cursor.y--;
       var len = 0;
       var lastLine = this.buffer.length - (this.width * 2);
       var statusLine = this.buffer.length - (this.width * 1);
 
-      for (i = 0, len = this.buffer.length; i < len; i++) {
-        if (i < lastLine) {
+      for(i = 0, len = this.buffer.length; i < len; i++) {
+        if(i < lastLine) {
           this.buffer[i] = this.buffer[i + this.width];
           this.attrs[i] = this.attrs[i + this.width];
         } else {
@@ -208,7 +208,7 @@ var Terminal = (function () {
 var term = new Terminal();
 
 function update() {
-  if (!gl) return;
+  if(!gl) return;
 
   gl.bindBuffer(gl.ARRAY_BUFFER, temrinalRender.geometryBuf);
   gl.bufferData(gl.ARRAY_BUFFER, term.getGeoBuffer(), gl.STATIC_DRAW);
@@ -309,7 +309,7 @@ window.addEventListener('keydown', function (e) {
 
   update();
 })
-window.focus()
+window.focus();
 
 
 
@@ -330,7 +330,7 @@ window.requestAnimationFrame = window.requestAnimationFrame || (function () {
 
 
 /**
- * global variables for rendering... this could use some refactoring.
+ * global variables for rendering
  */
 var bgRender = {};
 var compositor = {};
@@ -339,7 +339,6 @@ var temrinalRender = {};
 
 var canvas, gl;
 
-// parameters for rendering
 var parameters = {
   startTime: Date.now(),
   time: 0,
@@ -400,7 +399,7 @@ function init() {
   var content = $('#content')[0];
 
   try {
-    gl = canvas.getContext('experimental-webgl', {alpha: false})
+    gl = canvas.getContext('experimental-webgl', {alpha: false});
   } catch (error) {}
 
   // handle errors if we can't create a context
@@ -677,12 +676,15 @@ function init() {
  */
 function resize () {
   if (!gl) return;
-  var r = window.devicePixelRatio || 1
-  var w = Math.floor(gl.canvas.clientWidth * r)
-  var h = Math.floor(gl.canvas.clientHeight * r)
-  if (canvas.width !== w || canvas.height !== h) {
-    canvas.width = parameters.screenWidth = w
-    canvas.height = parameters.screenHeight = h
+
+  var r = window.devicePixelRatio || 1;
+
+  var w = Math.floor(gl.canvas.clientWidth * r);
+  var h = Math.floor(gl.canvas.clientHeight * r);
+
+  if(canvas.width !== w || canvas.height !== h) {
+    canvas.width = parameters.screenWidth = w;
+    canvas.height = parameters.screenHeight = h;
   }
 }
 
@@ -692,16 +694,18 @@ function resize () {
  */
 var lastFrame = 0
 function animate () {
-  var now = Date.now()
-  if (now - 1000 / 30 > lastFrame) {
-    lastFrame = now
-    render()
+  var now = Date.now();
+
+  if(now - 1000 / 30 > lastFrame) {
+    lastFrame = now;
+    render();
   }
-  requestAnimationFrame(animate)
+
+  requestAnimationFrame(animate);
 }
 
 function render () {
-  if (!temrinalRender.program) return
+  if(!temrinalRender.program) return
   parameters.time = Date.now() - parameters.startTime;
 
   // attach terminal framebuffer (RTT)
