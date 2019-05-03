@@ -36,6 +36,9 @@ module.exports = function(grunt) {
             'js/choices.js',
             'js/glHelpers.js',
             'js/terminal.js',
+            'js/terminal_input.js',
+            'js/terminal_render.js',
+            'js/terminal_init.js',
           ]
         }
       }
